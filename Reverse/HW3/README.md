@@ -545,7 +545,7 @@ FLAG{TrAc3_M3_1F_U_cAN}
 ```
 
 參考資料：
-https://omasko.github.io/2018/04/19/ptrace%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0I/\
+https://omasko.github.io/2018/04/19/ptrace%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0I/
 https://binhack.readthedocs.io/zh/latest/os/linux/syscall/ptrace.html\
 https://www.twblogs.net/a/5ef785485ddd268f20a8902c
 
