@@ -56,7 +56,10 @@ $\Rightarrow a_0=pt$ mod 3
 
 而講師投影片裡有提到這個性質
 送的密文乘上多少的 e 次方，對應的明文就是乘上多少
-![](https://i.imgur.com/MbVKXp6.png) ![](https://i.imgur.com/YVLxp18.png)
+
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/7e288dcd-38b6-495b-91ea-3123d99bcbe3)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/8c458370-e689-4a4e-b1cf-b9bc16830d0a)
+
 以這題來說，密文 $=(3^{-n})^e \cdot enc$，明文 $=3^{-n} \cdot pt$
 
 (2) 密文 $=(3^{-1})^e\cdot enc$，明文$=3^{-1}\cdot pt$
@@ -137,7 +140,7 @@ while True:
 ![](https://i.imgur.com/zoMVYSN.png)
 
 找出 flag
-```
+```sh
 FLAG{lE4ST_519Nific4N7_Bu7_m0S7_1MporT4Nt}
 ```
 不過，即使是我的 M1 mac
@@ -189,9 +192,8 @@ print(output)
 這個部分我卡了很久
 直到看到講師投影片中有出現 companion matrix 的內容
 
-![](https://i.imgur.com/UF6kx0B.png)
-
-![](https://i.imgur.com/JwNcuDi.png)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/8dbfb0bf-454f-40e6-b642-eaa8a766cdb4)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/7174c3af-a894-4a5e-9446-fc6501d0c417)
 
 但是看完後似乎還是覺得對解題沒有幫助
 繼續查了許多資料後，看到了這篇文章
@@ -237,7 +239,7 @@ https://doc.sagemath.org/html/en/reference/matrices/sage/matrix/special.html#sag
 因此這邊必須要指定成 left，求出的相伴矩陣才會是正確的
 (讓相伴矩陣去乘一次 state vector，就相當於 getbit 一次)
 
-![](https://i.imgur.com/XMIpmTP.png)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/eb7e258a-77d2-4717-a6da-74fbc7271389)
 
 那既然我們有了可以任意求之後某個狀態的相伴矩陣後
 再加上 output 後面 70 bits 都沒有跟 flag xor 過
@@ -246,7 +248,7 @@ https://doc.sagemath.org/html/en/reference/matrices/sage/matrix/special.html#sag
 因此相伴矩陣也要乘 37 次，所以把它 37 次方
 接著透過 M 與其反矩陣回推出 initial state
 $(M \cdot s0=s$，則 $s0 =M^{-1} \cdot s)$
-```python=
+```python
 Cm ^= 37
 M = matrix(Z2, 64)
 for i in range(64):
@@ -259,9 +261,9 @@ last64_v = vector(Z2, output[-64:])
 M_inv = M^(-1) # inverse of matrix M
 initial_state = M_inv * last64_v
 ```
-![](https://i.imgur.com/yifyrdg.png)
 
-![](https://i.imgur.com/E6sumDU.png)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/e61608e2-5a87-4200-8e5f-574c8eb0430c)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/eabd30a9-a8df-434d-b873-91aeb1a49daf)
 
 有了 initial state 後，就可以用相伴矩陣直接算出之後的每個 state，並且得到原本還沒有被 xor 的 output
 
@@ -274,7 +276,7 @@ while len(origin_output) != len(output):
 print(origin_output)
 ```
 
-![](https://i.imgur.com/HwxkBp5.png)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/4b9f6a7d-1430-44c3-a81f-6d975b1d447b)
 
 求出原本還沒被 xor 的 output 後
 將它與最後的 output 進行 xor，即為 flag 了
@@ -288,7 +290,8 @@ for i in range(len(output)):
     flag.append((origin_output[i] + output[i]) % 2) # xor
 print(flag)
 ```
-![](https://i.imgur.com/yTSLcml.png)
+
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/36f61ad5-798b-4898-8dd5-301a604b40ca)
 
 接著就能還原出原始的 flag 字串了
 
@@ -301,13 +304,13 @@ for i in range(len(flag)//8):
     answer += chr(int(s, 2))
 print(answer)
 ```
-![](https://i.imgur.com/W88pGPR.png)
+
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/894e263b-4f84-488a-a8da-5eecd550ecea)
 
 找出 flag
-```
+```sh
 FLAG{Y0u_c4N_nO7_Bru73_f0RCe_tH15_TiM3!!!}
 ```
-
 
 ## [LAB] dlog
 
@@ -361,7 +364,7 @@ if __name__ == '__main__':
 將找出來的這個質數 p 丟給它，而第二個數字 b 則丟給他 2～15 之間的整數
 接著它會回傳 secret，然後將此值給 ct 這個變數，而 b 送什麼值就給什麼值
 
-![](https://i.imgur.com/IggVjMC.png)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/8b3d8415-84a4-401a-a693-7264dd1e455c)
 
 ```python
 # sage code
@@ -376,24 +379,22 @@ discrete_log(ct, b)
 from Crypto.Util.number import long_to_bytes
 print(long_to_bytes())
 ```
-![](https://i.imgur.com/hkJAsZe.jpg)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/77d8b1a4-6eff-46a2-b8e2-c7dda7b6d216)
 
 重複同樣的流程幾遍後，發現當 b = 5 時會印出 flag
 但是上傳到課程網站上卻說是錯的，代表這個不是真的 flag
 
-![](https://i.imgur.com/FdemIwO.png)
-
-![](https://i.imgur.com/7zPhgy7.png)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/2cf4a9a2-9481-4987-9bfa-14a3941919bd)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/05651854-1e33-4200-905c-cd0506c34e67)
 
 於是繼續試下去，當 b = 10 時，出現了第 2 次 flag
 而這次上傳到課程網站上，答案就正確了～
 
-![](https://i.imgur.com/mIytNwO.png)
-
-![](https://i.imgur.com/lBpzdTF.png)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/02172e2d-0d51-4427-87f4-12e047ec0ebf)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/61557310-e828-4502-878b-e3385cc1f94d)
 
 找出 flag
-```
+```sh
 FLAG{D0_No7_SLiP!!!1t'5_SM0o7h_OwO}
 ```
 
@@ -458,7 +459,8 @@ for i in range(10):
      t = Mod(p-1, p)
      print(t**i)
 ```
-![](https://i.imgur.com/9lB3hgR.png)
+
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/fc069ff2-3db8-4c77-82e2-39fc82537d33)
 
 確定 code 沒有寫錯，接著把他開根號
 
@@ -469,7 +471,7 @@ for i in range(10):
      print(t**i)
 ```
 
-![](https://i.imgur.com/RtGhd1a.png)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/6d59f8e3-f7f8-412e-a31c-3e7771e810c7)
 
 從輸出結果中也會發現，每 4 次會有一次答案是 1
 也就是說，輸出結果有四分之一機率答案會是 1
@@ -478,15 +480,15 @@ for i in range(10):
 那如果將 p 代換成題目一開始印出來的質數 p，會怎麼樣？
 實際測試看看～
 
-![](https://i.imgur.com/LCMZ6E4.png)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/c5d2e5e0-e4de-483b-a673-cec808b3e539)
 
 ```python
 for i in range(5):
     t = sqrt(Mod(p-1, p))
     print(t**i)
 ```
-![](https://i.imgur.com/MNC1WuX.png)
 
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/da5850aa-45d2-44de-a1c2-1da532666951)
 
 果然，確實是 4 個一循環，答案有四分之一機率會是 1
 這樣的話，我給它的輸入 g 代 t (即圖片中選取起來的部分)
@@ -496,28 +498,29 @@ for i in range(5):
 
 將輸入 g 代 t
 
-![](https://i.imgur.com/oycCJpI.png)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/63898fdf-fc4c-406c-96d5-b6541db29030)
 
 接著把印出來的輸出結果 c 過 long_to_bytes
-```python=
+```python
 from Crypto.Util.number import long_to_bytes
 long_to_bytes()
 ```
 
-![](https://i.imgur.com/rxSIhLt.png)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/412284f0-03aa-4437-9ae7-1a15f0398eb3)
 
 結果沒有出現 flag，代表沒有命中四分之一機率
 於是我再重複多試了幾次
 
-![](https://i.imgur.com/juzFH77.png)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/7180a938-2baf-44ae-90d1-b51cd8c9f1f5)
 
 ```python
 sqrt(Mod(p-1, p)) # t
 ```
-![](https://i.imgur.com/bJTECht.png)
+
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/85d219b4-aae2-45c9-ab9b-c0054afd7e33)
 
 最後終於命中四分之一機率了！找出 flag
-```
+```sh
 FLAG{M4yBe_i_N33d_70_checK_7he_0rDEr_OF_G}
 ```
 (當初試了 10 幾次才成功，我可能太非了XD)
@@ -527,30 +530,14 @@ FLAG{M4yBe_i_N33d_70_checK_7he_0rDEr_OF_G}
 第一種：在 mod p 下的根號 (p-1) 不存在
 這種情況他會直接印 sqrt(p-1) 出來
 
-![](https://i.imgur.com/Em4jbQm.png)
-
-![](https://i.imgur.com/wlKKgf6.png)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/fcad82bf-2075-4a42-b1f6-039bd61c8e9c)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/34107544-6d67-4bd6-a32d-0a9f7f6b8bfc)
 
 第二種：被回 Bad，因為 $g^a$ 有可能會等於 1
 
-![](https://i.imgur.com/DJJr0K9.png)
-
-![](https://i.imgur.com/jmdKHza.png)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/5062932d-9dc3-457a-8445-f38ef4998b3c)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/e5696c58-528b-4a9d-8f67-f21a8d35ef4a)
 
 遇到這兩種情況時就直接重來就好
 
 ## [HW] node
-
-
-
-
-
-
-
-
-
-
-
-
-
-
