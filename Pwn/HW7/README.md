@@ -92,6 +92,7 @@ Y 的同一個 bin 裡 (Tcache 0x70 subbin) 的下一個 free chunk 確實是 X�
 因此第六關的答案計算方式為 ```(Y 的 base address) - (X 的 malloc size) - 0x20```
 
 綜合每一關的答案計算方式後，最後的解題腳本如下
+
 ```python
 # heapmath/solve.py
 from pwn import *
