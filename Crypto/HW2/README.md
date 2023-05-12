@@ -1,19 +1,19 @@
 # 2022 交大程式安全 HW2 writeup
 
-執行環境：2020 M1 macbook pro (arm晶片，非x86架構)
+執行環境：2020 M1 macbook pro (arm晶片，非x86架構)\
 code 在一般環境應該也可以跑
 
 ## [HW] AES
 
-我是照著講師投影片 80～84 頁上面的方法做，就解出來了
-也就是說解題手法是用 CPA (Correlation Power Analysis)
-而 CPA 要用以前高中數學有教過的相關係數 (correlation coefficient) 公式去算相關性
-這個部分也不用自己慢慢代公式去算
-python 的 numpy 套件已經有算相關係數的 function 可以直接用
+我是照著講師投影片 80～84 頁上面的方法做，就解出來了\
+也就是說解題手法是用 CPA (Correlation Power Analysis)\
+而 CPA 要用以前高中數學有教過的相關係數 (correlation coefficient) 公式去算相關性\
+這個部分也不用自己慢慢代公式去算\
+python 的 numpy 套件已經有算相關係數的 function 可以直接用\
 參考資料：https://zhuanlan.zhihu.com/p/339384769?utm_id=0
 
-說明一下如何用 numpy 來計算相關係數
-將兩筆資料放入 list 裡，轉為 numpy array 後
+說明一下如何用 numpy 來計算相關係數\
+將兩筆資料放入 list 裡，轉為 numpy array 後\
 傳入 corrcoef 這個 function 中
 
 ```python
@@ -26,10 +26,10 @@ print(np.corrcoef(x, y)[1][0])
 ```
 輸出結果：相關係數 $= 0.7798095288543354$
 
-![](https://i.imgur.com/4jjMtFY.png)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/9ef18e4c-49d5-4cdb-8e20-de9bf21e9618)
 
-印出來會是一個 2 x 2 的矩陣
-而這兩筆資料的相關係數會放在左下和右上的對角線部分
+印出來會是一個 2 x 2 的矩陣\
+而這兩筆資料的相關係數會放在左下和右上的對角線部分\
 取左下 [1][0] 或取右上 [0][1] 都可以
 
 考慮當兩筆資料為線性關係時，例如 $y=2x+3$
@@ -42,11 +42,11 @@ print(np.corrcoef(x, y)[0][1])
 ```
 輸出結果：相關係數 $= 1$
 
-![](https://i.imgur.com/GPnTPz0.png)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/722ea65c-c087-4fa3-92d9-029ab2a6cbd0)
 
 接下來開始寫程式來解題，首先看投影片這頁
 
-![](https://i.imgur.com/H6jl4Ql.png)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/ab35ec8a-8e84-4e81-aa4e-d44880f68c49)
 
 將題目給的 json 檔讀進來
 
@@ -67,27 +67,27 @@ T = len(pm[0])
 ```
 接下來要把明文分成一個一個 byte 去處理
 
-![](https://i.imgur.com/UHtaGO1.png)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/626ebc0a-b416-4b2c-9fea-432da6295362)
 
-這邊解說先只考慮明文的第一個 byte
-key 總共會有 256 種可能 (0x00 ～ 0xFF，即 0 ～ 255)
-將每種可能分別乘上每一個明文的第一個 byte，然後到 Sbox 裡查表找對應的值
+這邊解說先只考慮明文的第一個 byte\
+key 總共會有 256 種可能 (0x00 ～ 0xFF，即 0 ～ 255)\
+將每種可能分別乘上每一個明文的第一個 byte，然後到 Sbox 裡查表找對應的值\
 在題目提供的 aes.c 原始碼裡可以找到 Sbox
 
-![](https://i.imgur.com/f7RxxYf.png)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/740e020c-ada4-48e6-b0d5-30b43347e9f3)
 
-而 AES 加密過程中，到 Sbox 裡查表的方式這邊說明一下
-例如 0x57 的話，會到 Sbox 的第 5 個 row、第 7 個 column，也就是 Sbox[5][7]
-所以必須要實作把一個整數拆成分別求前面 8 個 bit 和後面 8 個 bit 的十進位值
-例如十進位的 67，二進位表示法是 01000011 (注意，要補滿到 8 個 bits)
-$0100=4$，$0011=3$，因此 16 進位表示法為 0x43
-查表的時候會去查 Sbox[4][3]
+而 AES 加密過程中，到 Sbox 裡查表的方式這邊說明一下\
+例如 0x57 的話，會到 Sbox 的第 5 個 row、第 7 個 column，也就是 Sbox[5][7]\
+所以必須要實作把一個整數拆成分別求前面 8 個 bit 和後面 8 個 bit 的十進位值\
+例如十進位的 67，二進位表示法是 01000011 (注意，要補滿到 8 個 bits)\
+$0100=4$，$0011=3$，因此 16 進位表示法為 0x43\
+查表的時候會去查 Sbox[4][3]\
 (而 a、b、c、d、e、f 分別代表 10、11、12、13、14、15)
 
-由於使用的 power model 是 Hamming Weight
+由於使用的 power model 是 Hamming Weight\
 所以查表找出對應的值後，要算出二進位表示法總共有幾個 bits 是 1
 
-![](https://i.imgur.com/PO7MyoX.png)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/71c7290f-f72d-46f3-8462-a47cf54dd2b5)
 
 程式碼如下
 
@@ -132,18 +132,18 @@ M = []
         M.append(row)
     assert len(M) == D and len(M[0]) == K
 ```
-看剛才 step 4 那頁投影片，接下來要把算出來的矩陣 M 的每一個 column
-從 column 0 開始，一直到 column K-1
-分別去跟 pm 矩陣的每一個 column 計算相關係數
-M 的每一個 column 與 pm 矩陣的計算結果會存成一個 row
-然後重複 K 次 (矩陣 M 的 column 0 ～ K-1)
+看剛才 step 4 那頁投影片，接下來要把算出來的矩陣 M 的每一個 column\
+從 column 0 開始，一直到 column K-1\
+分別去跟 pm 矩陣的每一個 column 計算相關係數\
+M 的每一個 column 與 pm 矩陣的計算結果會存成一個 row\
+然後重複 K 次 (矩陣 M 的 column 0 ～ K-1)\
 所以最後會是 K x T 的矩陣
 
 ![](https://i.imgur.com/HXywDs7.png)
 
-程式碼如下，這邊會先將原本的 pm 矩陣先做 transpose
-也就是把 row 變為 column，column 變為 row，然後存成矩陣 Y
-比較方便接下來算相關係數
+程式碼如下，這邊會先將原本的 pm 矩陣先做 transpose\
+也就是把 row 變為 column，column 變為 row，然後存成矩陣 Y\
+比較方便接下來算相關係數\
 計算完畢後，將結果存在 M_corrcoef 矩陣
 
 ```python
@@ -173,10 +173,10 @@ for k in range(K):
     M_corrcoef.append(row)
 assert len(M_corrcoef) == K and len(M_corrcoef[0]) == T
 ```
-接著去看算出來的相關係數中最大的那個，對應的 k 是多少，即為答案
-也就是說去看整個 M_corrcoef 矩陣中，最大的值是哪個
-其對應的 k 值就會是 key (flag 字串) 的第一個 byte
-得出 k 後，轉成在 ascii code 裡對應的字元
+接著去看算出來的相關係數中最大的那個，對應的 k 是多少，即為答案\
+也就是說去看整個 M_corrcoef 矩陣中，最大的值是哪個\
+其對應的 k 值就會是 key (flag 字串) 的第一個 byte\
+得出 k 後，轉成在 ascii code 裡對應的字元\
 就會是 key (flag 字串) 的第一個字
 ```python
 flag = 0
@@ -191,11 +191,11 @@ print(flag, chr(flag))
 ```
 輸出結果：flag 的第一個字元是 1
 
-![](https://i.imgur.com/egkkfpF.png)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/5c9d078a-829b-4886-a102-7656acbf7a3c)
 
-由於這邊解說是只考慮明文的第一個 byte
-因此如果要把所有的 byte 都求出來的話
-在外層多加一層迴圈去跑每個 byte 就行 (flag 共有 16 個 bytes)
+由於這邊解說是只考慮明文的第一個 byte\
+因此如果要把所有的 byte 都求出來的話\
+在外層多加一層迴圈去跑每個 byte 就行 (flag 共有 16 個 bytes)\
 於是，最後的解題程式碼就會是
 
 
@@ -297,7 +297,7 @@ print(answer)
 ```
 輸出結果
 
-![](https://i.imgur.com/x0CUG6J.png)
+![image](https://github.com/YungPingXu/NYCU-Software-Security-2022/assets/52243909/65899030-9e59-40e9-8230-7fe4eb3d6134)
 
 
 找出 flag
@@ -305,5 +305,5 @@ print(answer)
 FLAG{18MbH9oEnbXHyHTR}
 ```
 
-不過這個跑了蠻久的，跑了好幾分鐘才跑完
+不過這個跑了蠻久的，跑了好幾分鐘才跑完\
 演算法方面好像不太能優化時間複雜度了
