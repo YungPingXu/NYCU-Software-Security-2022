@@ -1,0 +1,6 @@
+LIBRARY "DLLDemo"
+EXPORTS
+	MyFunction0 @1
+	MyFunction1 @2 NONAME
+	MyFunction2 @5
+
